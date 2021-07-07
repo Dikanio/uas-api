@@ -2,7 +2,7 @@
 
 @section('title', $data->title)
 
-@section
+@section('content')
     <h2 class="m-5 p-0">{{ $data->title }}</h2>
     <p class="content p-2">{!! $data->content !!}</p>
 @endsection

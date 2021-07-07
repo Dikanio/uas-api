@@ -15,3 +15,9 @@ use App\Http\Controllers\SiteController;
 */
 
 Route::get('/', [SiteController::class, 'index']);
+
+Route::redirect('/articles', '/');
+
+Route::match(['get', 'post'], '/articles/new', [SiteController::class, 'newArticles']);
+
+Route::get('/articles/{id}', [SiteController::class, 'getArticles']);
