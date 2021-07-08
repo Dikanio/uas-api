@@ -11,19 +11,38 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">WEBLOG</a>
-            <button class="navbar-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <!-- <button class="navbar-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
-            </button>
+            </button> -->
+            @if(Auth::check())
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg 0">
                     <li class="nav-item">
                         <a href="{{ url('/')}}" aria-current="page" class="nav-link">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ url('/articles/new')}}" class="nav-link">New Article</a>
+                        <a href="{{ route('article-new')}}" class="nav-link">New Article</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link">Hi {{ Auth::user()->name }}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('logout')}}" class="nav-link">Logout</a>
                     </li>
                 </ul>
             </div>
+            @else
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg 0">
+                    <li class="nav-item">
+                        <a href="{{ url('/')}}" aria-current="page" class="nav-link">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('login')}}" class="nav-link">Login</a>
+                    </li>
+                </ul>
+            </div>
+            @endif
         </div>
     </nav>
     <div class="container">

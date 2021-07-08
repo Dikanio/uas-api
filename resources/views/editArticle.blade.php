@@ -1,14 +1,14 @@
 @extends('layouts.main')
 
-@section('title', 'New Article')
+@section('title', 'Edit Article')
 
 @section('content')
-    <h2 class="m-5">New Article</h2>
+    <h2 class="m-5">Edit Article</h2>
     <form method="post">
         @csrf
         <div class="mb-3">
             <label for="frm-title" class="form-label">Title</label>
-            <input type="text" class="form-control" id="frm-title" name="frm-title" placeholder="Article Title">
+            <input type="text" class="form-control" id="frm-title" name="frm-title" placeholder="Article Title" value="{{ $data->title }}">
         </div>
         <div class="mb-3">
             <label for="frm-status" class="form-label">Status</label>
@@ -19,7 +19,7 @@
         </div>
         <div class="mb-3">
             <label for="frm-content" class="form-label">Content</label>
-            <textarea class="form-control" id="frm-content" name="frm-content" rows="3"></textarea>
+            <textarea class="form-control" id="frm-content" name="frm-content" rows="3">{!! $data->content !!}</textarea>
         </div>
         <div>
             <button type="submit" class="btn btn-primary form-control">Submit</button>

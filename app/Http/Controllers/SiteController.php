@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use GuzzleHttp\Exception\RequestException;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
+use App\Models\User;
 
 class SiteController extends Controller
 {
@@ -53,7 +55,8 @@ class SiteController extends Controller
                 abort(404);
             }
         });
-
+        $user = User::find($data->author);
+        $data->author_name = $user->name ?? "-";
         return view('viewArticle', ['data' => $data]);
     }
 
@@ -61,11 +64,15 @@ class SiteController extends Controller
         if($request->isMethod('post')) {
             $title = $request->input('frm-title');
             $content = $request->input('frm-content');
+            $published_at = null;
+            if ($request->input('frm-status') == 'published') {
+                $published_at = Carbon\Carbon::now();
+            }
             $dataModel['resource'][] = [
-                'author' => '1',
+                'author' => Auth::user()->id,
                 'title' => $title,
                 'content' => $content,
-                'published_at' => null,
+                'published_at' => $published_at,
             ];
 
             try {
@@ -84,5 +91,52 @@ class SiteController extends Controller
         }
         
         return view('newArticle');
+    }
+
+    public function editArticles(Request $request, $id) {
+        if($request->isMethod('put')) {
+            $title = $request->input('frm-title');
+            $content = $request->input('frm-content');
+            $published_at = null;
+            if ($request->input('frm-status') == 'published') {
+                $published_at = Carbon\Carbon::now();
+            }
+            $dataModel['resource'][] = [
+                'author' => Auth::user()->id,
+                'title' => $title,
+                'content' => $content,
+                'published_at' => $published_at,
+            ];
+
+            try {
+                $reqData = $this->apiClient->post('articles', [
+                    'json' => $dataModel
+                ]);
+                $apiResponse = json_decode($reqData->getBody())->resource;
+                $newId = $apiResponse[0]->id;
+
+                Cache::forget('index');
+
+                return redirect("/articles");
+            } catch (\Exception $e) {
+                abort(501);
+            }
+        }
+        $key = "articles/{$id}";
+        $data = Cache::get($key, function() use ($key) {
+            try {
+                $reqData = $this->apiClient->get($key);
+                $resource = json_decode($reqData->getBody());
+
+                Cache::add($key, $resource);
+                return $resource;
+            } catch (Exception $e) {
+                abort(404);
+            }
+        });
+        $user = User::find($data->author);
+        $data->author_name = $user->name ?? "-";
+
+        return view('editArticle', ['data' => $data]);
     }
 }
