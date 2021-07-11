@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use App\Models\User;
+use Carbon\Carbon;
 
 class SiteController extends Controller
 {
@@ -66,7 +67,7 @@ class SiteController extends Controller
             $content = $request->input('frm-content');
             $published_at = null;
             if ($request->input('frm-status') == 'published') {
-                $published_at = Carbon\Carbon::now();
+                $published_at = Carbon::now();
             }
             $dataModel['resource'][] = [
                 'author' => Auth::user()->id,
@@ -99,7 +100,7 @@ class SiteController extends Controller
             $content = $request->input('frm-content');
             $published_at = null;
             if ($request->input('frm-status') == 'published') {
-                $published_at = Carbon\Carbon::now();
+                $published_at = Carbon::now();
             }
             $dataModel['resource'][] = [
                 'author' => Auth::user()->id,
