@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
   
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Validator;
 use Hash;
 use Session;
@@ -51,6 +52,7 @@ class AuthController extends Controller
   
         if (Auth::check()) { // true sekalian session field di users nanti bisa dipanggil via Auth
             //Login Success
+            Cache::forget('index');
             return redirect()->route('article-index');
   
         } else { // false
@@ -111,6 +113,7 @@ class AuthController extends Controller
     public function logout()
     {
         Auth::logout(); // menghapus session yang aktif
+        Cache::forget('index');
         return redirect("/articles");
     }
   

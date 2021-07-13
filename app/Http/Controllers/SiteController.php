@@ -110,15 +110,12 @@ class SiteController extends Controller
             ];
 
             try {
-                $reqData = $this->apiClient->post('articles', [
+                $key = "articles/{$id}";
+                $reqData = $this->apiClient->put($key, [
                     'json' => $dataModel
                 ]);
-                $apiResponse = json_decode($reqData->getBody())->resource;
-                $newId = $apiResponse[0]->id;
-
-                Cache::forget('index');
-
-                return redirect("/articles");
+                Cache::forget($key);
+                return redirect()->route('article-show', $id);
             } catch (\Exception $e) {
                 abort(501);
             }

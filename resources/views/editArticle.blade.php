@@ -5,6 +5,7 @@
 @section('content')
     <h2 class="m-5">Edit Article</h2>
     <form method="post">
+        @method('put')
         @csrf
         <div class="mb-3">
             <label for="frm-title" class="form-label">Title</label>
