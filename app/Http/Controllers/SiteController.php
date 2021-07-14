@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use App\Models\User;
+use App\Models\Comment;
 use Carbon\Carbon;
 
 class SiteController extends Controller
@@ -58,7 +59,10 @@ class SiteController extends Controller
         });
         $user = User::find($data->author);
         $data->author_name = $user->name ?? "-";
-        return view('viewArticle', ['data' => $data]);
+        return view('viewArticle', [
+            'data' => $data,
+            'comments' => Comment::where('article_id', $id)->get()
+        ]);
     }
 
     public function newArticles(Request $request) {
@@ -136,5 +140,32 @@ class SiteController extends Controller
         $data->author_name = $user->name ?? "-";
 
         return view('editArticle', ['data' => $data]);
+    }
+
+    public function deleteArticles(Request $request, $id) {
+        try {
+            $key = "articles/{$id}";
+            $reqData = $this->apiClient->delete($key);
+            $resource = json_decode($reqData->getBody());
+            Cache::forget($key);
+        } catch (\Exception $e) {
+            abort(500);
+        }
+        return redirect("/articles");
+    }
+
+    public function commentArticles(Request $request) {
+        try {
+            $comment = new Comment();
+            $comment->article_id = $request->input('frm-article-id');
+            $comment->name = $request->input('frm-name');
+            $comment->content = $request->input('frm-content');
+            $comment->save();
+
+            return redirect()->route('article-show', $request->input('frm-article-id'));
+        } catch (\Exception $ex) {
+            abort(500);
+        }
+        return redirect()->back();
     }
 }
