@@ -47,12 +47,31 @@
     </form>
 @endsection
 @section('page-script')
-@parent
-    <script type="text/javascript">
-        // window.addEventListener('DomContentLoad', (event) => {
+    <script type="text/javascript">    
+    console.log('test di luar');
+        document.addEventListener('DOMContentLoaded', (event) => {
             tinymce.init({
                 selector: 'textarea'
             });
-
-        // });
+            console.log('test');
+            swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                })
+                .then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire(
+                    'Deleted!',
+                    'Your file has been deleted.',
+                    'success'
+                    )
+                }
+            })
+        });
+    </script>
 @endsection

@@ -39,8 +39,7 @@ class SiteController extends Controller
             } catch (RequestException $e) {
                 return [];
             }
-        });
-        // dd($data);
+        });        
         return view('index', ['data' => $data]);
     }
 
