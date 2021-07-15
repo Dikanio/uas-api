@@ -53,14 +53,15 @@ class SiteController extends Controller
                 Cache::add($key, $resource);
                 return $resource;
             } catch (Exception $e) {
-                abort(404);
+                return redirect()->back()->with('failed', 'Something went wrong');
             }
         });
         $user = User::find($data->author);
         $data->author_name = $user->name ?? "-";
         return view('viewArticle', [
             'data' => $data,
-            'comments' => Comment::where('article_id', $id)->get()
+            'comments' => Comment::where('article_id', $id)->get(),
+            'total_comment' => Comment::where('article_id', $id)->count()
         ]);
     }
 
@@ -88,9 +89,9 @@ class SiteController extends Controller
 
                 Cache::forget('index');
 
-                return redirect("/articles");
+                return redirect("/articles")->with('success', 'Add Article Success');
             } catch (\Exception $e) {
-                abort(501);
+                return redirect()->back()->with('failed', 'Add Article Failed');
             }
         }
         
@@ -118,9 +119,9 @@ class SiteController extends Controller
                     'json' => $dataModel
                 ]);
                 Cache::forget($key);
-                return redirect()->route('article-show', $id);
+                return redirect()->route('article-show', $id)->with('success', 'Edit Success');
             } catch (\Exception $e) {
-                abort(501);
+                return redirect()->back()->with('failed', 'Edit failed');
             }
         }
         $key = "articles/{$id}";
@@ -132,7 +133,7 @@ class SiteController extends Controller
                 Cache::add($key, $resource);
                 return $resource;
             } catch (Exception $e) {
-                abort(404);
+                return redirect()->back()->with('failed', 'Something went wrong');
             }
         });
         $user = User::find($data->author);
@@ -147,10 +148,11 @@ class SiteController extends Controller
             $reqData = $this->apiClient->delete($key);
             $resource = json_decode($reqData->getBody());
             Cache::forget($key);
+            Cache::forget('index');
+            return redirect("/articles")->with('success', 'Delete Success');
         } catch (\Exception $e) {
-            abort(500);
-        }
-        return redirect("/articles");
+            return redirect()->back()->with('failed', 'Delete failed');
+        }        
     }
 
     public function commentArticles(Request $request) {
@@ -161,10 +163,9 @@ class SiteController extends Controller
             $comment->content = $request->input('frm-content');
             $comment->save();
 
-            return redirect()->route('article-show', $request->input('frm-article-id'));
+            return redirect()->route('article-show', $request->input('frm-article-id'))->with('success', 'Add Comment Success');
         } catch (\Exception $ex) {
-            abort(500);
+            return redirect()->back()->with('failed', 'Add Comment Failed');
         }
-        return redirect()->back();
     }
 }

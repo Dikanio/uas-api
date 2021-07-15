@@ -8,41 +8,43 @@
     <link rel="stylesheet" href="{{ asset('css/app.css')}}">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+   <nav class="navbar navbar-expand-lg navbar-light bg-light w-full">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">WEBLOG</a>
-            <!-- <button class="navbar-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
-            </button> -->
-            @if(Auth::check())
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg 0">
+            </button>
+            <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+                <ul class="navbar-nav mb-2 mb-lg 0 d-flex justify-content-between ms-auto">
                     <li class="nav-item">
                         <a href="{{ url('/')}}" aria-current="page" class="nav-link">Home</a>
                     </li>
-                    <li class="nav-item">
-                        <a href="{{ route('article-new')}}" class="nav-link">New Article</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link">Hi {{ Auth::user()->name }}</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('logout')}}" class="nav-link">Logout</a>
+                    @if(Auth::check())
+                        <li class="nav-item">
+                            <a href="{{ route('article-new')}}" class="nav-link">New Article</a>
+                        </li>
+                    @endif
+                    <li class="nav-item dropdown">
+                        @if(Auth::check())
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Hi, {{ Auth::user()->name }}
+                            </a>
+                        @else
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Akun
+                            </a>
+                        @endif
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><hr class="dropdown-divider"></li>
+                            @if(Auth::check())
+                                <a href="{{ route('logout')}}" class="dropdown-item">Logout</a>
+                            @else
+                                <a href="{{ route('login')}}" class="dropdown-item">Login</a>
+                            @endif
+                        </ul>
                     </li>
                 </ul>
             </div>
-            @else
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg 0">
-                    <li class="nav-item">
-                        <a href="{{ url('/')}}" aria-current="page" class="nav-link">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('login')}}" class="nav-link">Login</a>
-                    </li>
-                </ul>
-            </div>
-            @endif
         </div>
     </nav>
     <div class="container">
@@ -50,6 +52,22 @@
     </div>
 
     <script type="text/javascript" src="{{ asset('js/app.js')}}"></script>
+    <script type="text/javascript">
+        @if(Session::has('success'))
+            swal.fire(
+                'Yeay',
+                "{{ Session::get('success') }}",
+                'success'
+            )
+        @endif
+        @if(Session::has('failed'))
+            swal.fire(
+                'Oops',
+                "{{ Session::get('failed') }}",
+                'error'
+            )
+        @endif
+    </script>
     @yield('page-script')
     
 </body>
