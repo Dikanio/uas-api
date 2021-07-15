@@ -17,8 +17,8 @@
                 <div class="mb-3">
                     <label for="frm-status" class="form-label">Status</label>
                     <select name="frm-status" class="form-control">
-                        <option value="published">Published</option>
-                        <option value="draft">Draft</option>
+                        <option value="published" {{ $data->published_at ? 'selected' : '' }}>Published</option>
+                        <option value="draft" {{ empty($data->published_at) ? 'selected' : '' }}>Draft</option>
                     </select>
                 </div>
                 <div class="mb-3">
