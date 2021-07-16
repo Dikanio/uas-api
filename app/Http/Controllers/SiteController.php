@@ -89,7 +89,7 @@ class SiteController extends Controller
 
                 Cache::forget('index');
 
-                return redirect("/articles")->with('success', 'Add Article Success');
+                return redirect()->route('article-index')->with('success', 'Add Article Success');
             } catch (\Exception $e) {
                 return redirect()->back()->with('failed', 'Add Article Failed');
             }
@@ -149,7 +149,7 @@ class SiteController extends Controller
             $resource = json_decode($reqData->getBody());
             Cache::forget($key);
             Cache::forget('index');
-            return redirect("/articles")->with('success', 'Delete Success');
+            return redirect()->route('article-index')->with('success', 'Delete Success');
         } catch (\Exception $e) {
             return redirect()->back()->with('failed', 'Delete failed');
         }        
